@@ -1,0 +1,547 @@
+* {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    font-family: "Mona Sans", sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    --theme-clr: #fff;
+    background: var(--theme-clr);
+    position: relative;
+}
+
+/* Gallery container */
+.inf-grid-hero-container {
+    height: 100vh;
+    width: 100vw;
+    perspective: 1000px;
+    position: relative;
+    --sz: 1800px;
+    --grid-sz: 0;
+    --rev-dis: 0;
+}
+
+.inf-grid-hero-container>div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    display: grid;
+    place-items: center;
+    z-index: 1;
+}
+
+.inf-grid-hero-container>div::after {
+    content: "";
+    display: block;
+    height: 100%;
+    background: var(--theme-clr);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.inf-grid-hero-container>div {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-sz), 1fr);
+    grid-template-rows: repeat(var(--grid-sz), 1fr);
+    gap: clamp(2px, 0.5vw, 8px);
+}
+
+/* Mejoras para las imágenes en la galería */
+.inf-grid-hero-container>div>div {
+    width: 100%;
+    height: 100%;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    aspect-ratio: 1 / 1;
+    background: repeating-linear-gradient(45deg, #94a4c211 0%, #94a4c211 5%, transparent 5%, transparent 10%);
+    opacity: 0;
+    border: 2px solid transparent;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: scale(0.95);
+    object-fit: cover;
+    overflow: hidden;
+}
+
+.inf-grid-hero-container>div>div:hover {
+    border-color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transform: scale(0.97);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.inf-grid-hero-container>div>div.loaded {
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease-out, box-shadow 0.4s ease, border 0.4s ease;
+    transform-style: preserve-3d;
+    opacity: 1;
+    z-index: 2;
+    transform: translate3d(0, 0, -1px) scale(1) !important;
+}
+
+/* Top wall */
+.inf-grid-hero-container>div.top {
+    top: 0;
+    transform-origin: top center;
+    transform: rotateX(-90deg);
+    height: var(--sz);
+    perspective: 1000px;
+}
+
+.inf-grid-hero-container>div.top::after {
+    background: linear-gradient(180deg, transparent, var(--theme-clr) calc(1% * (100 - var(--rev-dis))));
+}
+
+.inf-grid-hero-container>div.top .shift-away {
+    translate: 0% 100%;
+}
+
+.inf-grid-hero-container>div.top>div {
+    transform: translate3d(0, 0, -100vh);
+}
+
+/* Left wall */
+.inf-grid-hero-container>div.left {
+    left: 0;
+    transform-origin: center left;
+    transform: rotateY(90deg);
+    width: var(--sz);
+}
+
+.inf-grid-hero-container>div.left::after {
+    background: linear-gradient(90deg, transparent, var(--theme-clr) calc(1% * (100 - var(--rev-dis))));
+}
+
+.inf-grid-hero-container>div.left .shift-away {
+    translate: 100% 0%;
+}
+
+.inf-grid-hero-container>div.left>div {
+    transform: translate3d(0, 0, -50vw);
+}
+
+/* Bottom wall */
+.inf-grid-hero-container>div.bottom {
+    bottom: 0;
+    transform-origin: bottom center;
+    transform: rotateX(90deg);
+    height: var(--sz);
+}
+
+.inf-grid-hero-container>div.bottom::after {
+    background: linear-gradient(0deg, transparent, var(--theme-clr) calc(1% * (100 - var(--rev-dis))));
+}
+
+.inf-grid-hero-container>div.bottom .shift-away {
+    translate: 0% -100%;
+}
+
+.inf-grid-hero-container>div.bottom>div {
+    transform: translate3d(0, 0, -50vh);
+}
+
+/* Right wall */
+.inf-grid-hero-container>div.right {
+    right: 0;
+    transform-origin: center right;
+    transform: rotateY(-90deg);
+    width: var(--sz);
+}
+
+.inf-grid-hero-container>div.right::after {
+    background: linear-gradient(270deg, transparent, var(--theme-clr) calc(1% * (100 - var(--rev-dis))));
+}
+
+.inf-grid-hero-container>div.right .shift-away {
+    translate: -100% 0%;
+}
+
+.inf-grid-hero-container>div.right>div {
+    transform: translate3d(0, 0, -50vw);
+}
+
+/* Content styling*/
+.content {
+    position: absolute;
+    width: 34%;
+    height: 34%;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 8px;
+    backdrop-filter: blur(3px);
+    margin: auto;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    z-index: 5;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    text-align: center;
+    transition: all 0.5s ease;
+}
+
+.content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.content h2 {
+    font-size: clamp(1.5em, 4vw, 3em);
+    font-weight: 600;
+    z-index: 1;
+    color: #000;
+    user-select: none;
+    margin: 0 0 10px 0;
+}
+
+.content p {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-weight: 500;
+    line-height: 1.5;
+    font-size: clamp(14px, 2.5vw, 16px);
+    padding: 0 clamp(5px, 2vw, 20px);
+}
+
+.content span {
+    color: orangered;
+    font-weight: 600;
+}
+
+.content .button {
+    background: #1e1e1e;
+    padding: clamp(8px, 2vw, 12px) clamp(20px, 5vw, 42px);
+    border-radius: 12px;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    font-size: clamp(12px, 2.5vw, 16px);
+}
+
+.content .button:hover {
+    box-shadow: inset 0 0 8px 1px #fff, inset 0 0 0 1px #fff;
+    transform: translateY(-2px);
+    background: #2a2a2a;
+}
+
+/* Back button - Responsivo */
+#back-btn {
+    position: absolute;
+    left: clamp(0.5em, 2vw, 1em);
+    top: clamp(0.5em, 2vh, 1em);
+    border: 1px solid #aaa;
+    z-index: 101;
+    background: #1e1e1e;
+    padding: clamp(8px, 1.5vw, 10px) clamp(15px, 4vw, 30px);
+    border-radius: 12px;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    font-size: clamp(12px, 2.5vw, 16px);
+}
+
+#back-btn:hover {
+    box-shadow: inset 0 0 8px 1px #fff, inset 0 0 0 1px #fff;
+    transform: translateY(-2px);
+    background: #2a2a2a;
+}
+
+/* Overlay */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    z-index: 95;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
+    isolation: isolate;
+}
+
+/* Selected Image Container - Nueva implementación */
+.selected-image-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(10px, 3vw, 30px);
+}
+
+.selected-image-container.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.selected-image {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: 8px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+    transition: all 0.5s ease;
+    transform: scale(0.8);
+}
+
+.selected-image-container.active .selected-image {
+    transform: scale(1);
+}
+
+/* Estados cuando hay imagen seleccionada */
+body.image-selected #overlay {
+    opacity: 1;
+}
+
+body.image-selected .content {
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+body.image-selected #back-btn {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Animación de cierre */
+.selected-image-container.closing {
+    transition: opacity 0.5s ease-in-out;
+}
+
+.selected-image-container.closing .selected-image {
+    transform: scale(0.8);
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Control panel */
+.tp-dfwv {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Gallery info */
+.gallery-info {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #666;
+    font-size: clamp(12px, 2vw, 14px);
+    z-index: 10;
+}
+
+/* ===== MEDIA QUERIES MEJORADAS ===== */
+
+/* Dispositivos móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+    .content {
+        width: 38%;
+        height: 35%;
+        padding: 15px;
+    }
+
+    .content h2 {
+        font-size: 1.1em;
+        margin-bottom: 8px;
+    }
+
+    .content p {
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .content .button {
+        padding: 8px 20px;
+        font-size: 14px;
+    }
+
+    .selected-image-container {
+        padding: 10px;
+    }
+
+    #back-btn {
+        font-size: 12px;
+        padding: 6px 15px;
+    }
+
+    .inf-grid-hero-container>div {
+        gap: 2px;
+    }
+}
+
+/* Dispositivos móviles (481px - 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+    .content {
+        width: 40%;
+        height: 35%;
+    }
+
+    .content h2 {
+        font-size: 0.8em;
+        margin-bottom: 8px;
+    }
+
+    .inf-grid-hero-container>div {
+        gap: 3px;
+    }
+}
+
+/* Tablets (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .content {
+        width: 35%;
+        height: 35%;
+    }
+}
+
+/* Pantallas grandes (1025px - 1440px) */
+@media (min-width: 1025px) and (max-width: 1440px) {
+    .content {
+        width: 35%;
+        height: 35%;
+    }
+}
+
+/* Pantallas muy grandes (más de 1440px) */
+@media (min-width: 1441px) {
+    .content {
+        width: 34%;
+        height: 35%;
+    }
+
+    .inf-grid-hero-container>div {
+        gap: 8px;
+    }
+}
+
+/* ===== ORIENTACIÓN ESPECÍFICA ===== */
+
+/* Orientación horizontal en dispositivos móviles */
+@media (orientation: landscape) and (max-height: 600px) {
+    .content {
+        width: 36%;
+        height: 35%;
+        padding: 14px;  
+    }
+
+    .content h2 {
+        font-size: 1.4em;
+        margin-bottom: 4px;
+    }
+
+    .content p {
+        margin-bottom: 0;
+        font-size: 13px;
+    }
+
+    .selected-image-container {
+        padding: 15px;
+    }
+
+    .selected-image {
+        max-height: 80vh;
+    }
+}
+
+/* Orientación vertical en tablets */
+@media (orientation: portrait) and (min-width: 768px) and (max-width: 1024px) {
+    .content {
+        width: 35%;
+        height: 35%;
+    }
+
+    .selected-image {
+        max-width: 90%;
+        max-height: 80vh;
+    }
+}
+
+/* Ajustes para dispositivos con notch o pantallas con recortes */
+@supports (padding-top: env(safe-area-inset-top)) {
+    #back-btn {
+        left: max(clamp(0.5em, 2vw, 1em), env(safe-area-inset-left));
+        top: max(clamp(0.5em, 2vh, 1em), env(safe-area-inset-top));
+    }
+
+    .selected-image-container {
+        padding:
+            max(clamp(10px, 3vw, 30px), env(safe-area-inset-top)) max(clamp(10px, 3vw, 30px), env(safe-area-inset-right)) max(clamp(10px, 3vw, 30px), env(safe-area-inset-bottom)) max(clamp(10px, 3vw, 30px), env(safe-area-inset-left));
+    }
+}
+
+/* Ajustes para pantallas de alta densidad de píxeles */
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+    .inf-grid-hero-container>div>div {
+        border-width: 1px;
+    }
+}
+
+/* Ajustes para usuarios que prefieren movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+
+    .content,
+    .content:hover,
+    .selected-image,
+    .selected-image-container.active .selected-image,
+    .selected-image-container.closing .selected-image,
+    #back-btn,
+    #back-btn:hover,
+    .inf-grid-hero-container>div>div,
+    .inf-grid-hero-container>div>div:hover,
+    .inf-grid-hero-container>div>div.loaded {
+        transition: none;
+        transform: none;
+        animation: none;
+    }
+}
